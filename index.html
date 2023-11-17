@@ -1,7 +1,28 @@
-<h1>test</h1>
-<script>
-const urlParams = new URLSearchParams(window.location.search);
-const name = urlParams.get('n');
-const type = urlParams.get('t');
-console.log(name,type);
-</script>
+<!DOCTYPE html>
+<html>
+<body style="text-align:center">
+  <h1 id="type"></h1>
+  <h2 id="text"></h2>
+  <script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const name = urlParams.get('n');
+  const type = urlParams.get('t');
+  console.log(name,type);
+  const type_text = document.getElementById("type");
+  const text_text = document.getElementById("text");
+  switch(type) {
+    case '0':
+      type_text.innerText = "Сертификот";
+      text_text.innerText = `Объект ${name} утверждён`;
+      break
+    case '1':
+      type_text.innerText = "Сертификот";
+      text_text.innerText = `Объект ${name} утверждён как "Деловой печатный документ"`;
+      break
+    default:
+      type_text.innerText = "Ошибка";
+      break
+  }
+  </script>
+</body>
+</html>
