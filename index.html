@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
-<body style="text-align:center">
+<body style="text-align:center;font-family:sans-serif">
   <h1 id="type"></h1>
   <h2 id="text"></h2>
+  <h2 id="cert">Сертицировано ООО "ДРУЖНЫЙ БЕЛЫЙ КОТ" ИНН 5406305323</h2>
   <script>
   const urlParams = new URLSearchParams(window.location.search);
   const name = urlParams.get('n');
@@ -10,6 +11,7 @@
   console.log(name,type);
   const type_text = document.getElementById("type");
   const text_text = document.getElementById("text");
+  const cert_text = document.getElementById("cert");
   switch(type) {
     case '0':
       type_text.innerText = "Сертификот";
@@ -21,6 +23,7 @@
       break
     default:
       type_text.innerText = "Ошибка";
+      cert_text.innerText = "";
       break
   }
   </script>
