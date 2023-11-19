@@ -4,6 +4,20 @@
   <h1 id="type"></h1>
   <h2 id="text"></h2>
   <h2 id="cert">Сертицировано ООО "ДРУЖНЫЙ БЕЛЫЙ КОТ" ИНН 5406305323</h2>
+  <div id="creator">
+    <form id="creator_form">
+      <input type="text" id="name" name="name" required minlength="1" maxlength="20" />
+      <fieldset>
+        <legend>Тип:</legend>
+        <input type="radio" id="general" name="cert_type" value="general" checked required/>
+        <label for="general">Обычный</label>
+        <input type="radio" id="doc" name="cert_type" value="doc" required/>
+        <label for="doc">Деловой печатный документ</label>
+      </fieldset>
+      <button id="create_btn">Создать</button>
+    </form>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3"></script>
   <script>
   const urlParams = new URLSearchParams(window.location.search);
   const name = urlParams.get('n');
@@ -12,6 +26,13 @@
   const type_text = document.getElementById("type");
   const text_text = document.getElementById("text");
   const cert_text = document.getElementById("cert");
+  const creator_form = document.getElementById("creator_form");
+  const create_btn = document.getElementById("create_btn");
+  create_btn.addEventListener("click", e => {
+    if (!creator_form.reportValidity()) return;
+    console.log(creator_form.elements);
+  })
+  reportValidity()
   switch(type) {
     case '0':
       type_text.innerText = "Сертификот";
