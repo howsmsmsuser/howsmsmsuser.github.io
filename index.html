@@ -9,13 +9,13 @@
       <input type="text" id="name" name="name" required minlength="1" maxlength="20" />
       <fieldset>
         <legend>Тип:</legend>
-        <input type="radio" id="general" name="cert_type" value="general" checked required/>
-        <label for="general">Обычный</label>
-        <br>
-        <input type="radio" id="doc" name="cert_type" value="doc" required/>
-        <label for="doc">Деловой печатный документ</label>
+        <select id="type_select" name="type_select">
+          <option id="general" value="general" selected required>Обычный</option>
+          <br>
+          <option id="doc" value="doc" required>Деловой печатный документ</option>
+        </select>
       </fieldset>
-      <button id="create_btn">Создать</button>
+      <button id="create_btn" form>Создать</button>
     </form>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3"></script>
@@ -31,7 +31,7 @@
   const create_btn = document.getElementById("create_btn");
   create_btn.addEventListener("click", e => {
     if (!creator_form.reportValidity()) return;
-    console.log(creator_form.elements);
+    console.log(creator_form.elements["name"], creator_form.elements["type_select"].selectedIndex);
   })
   switch(type) {
     case '0':
