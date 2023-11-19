@@ -9,6 +9,7 @@
     <div id="creator" style="width:40%;display:inline-block">
       <h2>Создать свой сертификат</h2>
       <form id="creator_form">
+        <label for="name">Имя объекта: </label>
         <input type="text" id="name" name="name" required minlength="1" maxlength="20" />
         <fieldset>
           <legend>Тип:</legend>
@@ -61,7 +62,7 @@
   create_btn.addEventListener("click", e => {
     if (!creator_form.reportValidity()) return;
     url = `https://howsmsmsuser.github.io/p.github.io/?name=${creator_form.elements["name"].value}&cert_type=${creator_form.elements["type_select"].selectedIndex}`;
-    qrurl = `http://qrcoder.ru/code/?${url}&2&1`;
+    qrurl = `http://qrcoder.ru/code/?${encodeURIComponent(url)}&2&1`;
     qrout.style.display = "block";
     qr.src = qrurl;
   })
