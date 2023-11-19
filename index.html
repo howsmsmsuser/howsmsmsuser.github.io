@@ -11,6 +11,7 @@
         <legend>Тип:</legend>
         <input type="radio" id="general" name="cert_type" value="general" checked required/>
         <label for="general">Обычный</label>
+        <br>
         <input type="radio" id="doc" name="cert_type" value="doc" required/>
         <label for="doc">Деловой печатный документ</label>
       </fieldset>
@@ -32,7 +33,6 @@
     if (!creator_form.reportValidity()) return;
     console.log(creator_form.elements);
   })
-  reportValidity()
   switch(type) {
     case '0':
       type_text.innerText = "Сертификот";
