@@ -4,21 +4,48 @@
   <h1 id="type"></h1>
   <h2 id="text"></h2>
   <h2 id="cert">Сертицировано ООО "ДРУЖНЫЙ БЕЛЫЙ КОТ" ИНН 5406305323</h2>
-  <div id="creator">
-    <form id="creator_form">
-      <input type="text" id="name" name="name" required minlength="1" maxlength="20" />
-      <fieldset>
-        <legend>Тип:</legend>
-        <select id="type_select" name="type_select">
-          <option id="general" value="general" selected required>Обычный</option>
-          <br>
-          <option id="doc" value="doc" required>Деловой печатный документ</option>
-        </select>
-      </fieldset>
-      <button id="create_btn" form>Создать</button>
-    </form>
-  </div>
+  <details>
+    <summary>Создать свой сертификат</summary>
+    <div id="creator" style="width:40%;display:inline-block">
+      <h2>Создать свой сертификат</h2>
+      <form id="creator_form">
+        <input type="text" id="name" name="name" required minlength="1" maxlength="20" />
+        <fieldset>
+          <legend>Тип:</legend>
+          <select id="type_select" name="type_select" reqiured>
+            <option id="general" value="general" selected required>Сертификот: Обычный</option>
+            <br>
+            <option id="doc" value="doc" required>Сертификот: Деловой печатный документ</option>
+          </select>
+        </fieldset>
+        <button id="create_btn" form>Создать</button>
+        <div id="qrout" style="display:none">
+          <h2>QR код:</h2>
+          <img id="qr">
+        </div>
+      </form>
+    </div>
+  </details>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3"></script>
+  <style>
+    details {
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      padding: 0.5em 0.5em 0;
+    }
+    summary {
+      font-weight: bold;
+      margin: -0.5em -0.5em 0;
+      padding: 0.5em;
+    }
+    details[open] {
+      padding: 0.5em;
+    }
+    details[open] summary {
+      border-bottom: 1px solid #aaa;
+      margin-bottom: 0.5em;
+    }
+  </style>
   <script>
   const urlParams = new URLSearchParams(window.location.search);
   const name = urlParams.get('n');
@@ -29,9 +56,14 @@
   const cert_text = document.getElementById("cert");
   const creator_form = document.getElementById("creator_form");
   const create_btn = document.getElementById("create_btn");
+  const qr = document.getElementById("qr");
+  const qrout = document.getElementById("qrout");
   create_btn.addEventListener("click", e => {
     if (!creator_form.reportValidity()) return;
-    console.log(creator_form.elements["name"], creator_form.elements["type_select"].selectedIndex);
+    url = `https://howsmsmsuser.github.io/p.github.io/?name=${creator_form.elements["name"].value}&cert_type=${creator_form.elements["type_select"].selectedIndex}`;
+    qrurl = `http://qrcoder.ru/code/?${url}&2&1`;
+    qrout.style.display = "block";
+    qr.src = qrurl;
   })
   switch(type) {
     case '0':
