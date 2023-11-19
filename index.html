@@ -61,7 +61,7 @@
   const qrout = document.getElementById("qrout");
   create_btn.addEventListener("click", e => {
     if (!creator_form.reportValidity()) return;
-    url = `https://howsmsmsuser.github.io/p.github.io/?name=${creator_form.elements["name"].value}&cert_type=${creator_form.elements["type_select"].selectedIndex}`;
+    url = `https://howsmsmsuser.github.io/p.github.io/?n=${creator_form.elements["name"].value}&t=${creator_form.elements["type_select"].selectedIndex}`;
     qrurl = `http://qrcoder.ru/code/?${encodeURIComponent(url)}&2&1`;
     qrout.style.display = "block";
     qr.src = qrurl;
@@ -69,7 +69,7 @@
   switch(type) {
     case '0':
       type_text.innerText = "Сертификот";
-      text_text.innerText = `Объект ${name} утверждён`;
+      text_text.innerText = `Объект ${name} сертифицирован`;
       break
     case '1':
       type_text.innerText = "Сертификот";
