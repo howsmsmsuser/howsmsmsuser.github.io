@@ -142,7 +142,7 @@
     <label for="promocode">Промокод:</label>
     <input type="text" id="promocode" name="promocode" required minlength="1" maxlength="5" size="10" spellcheck="false" />
     <br>
-    <button id="buy_premium">Купить</button>
+    <button id="buy_premium" class="bigbtn">Купить</button>
   </div>
   <script>
   const urlParams = new URLSearchParams(window.location.search);
@@ -176,7 +176,7 @@
       premiumprice.innerText = "100000000";
     }
   })
-  document.getElementById("create_btn").addEventListener("click", e => {
+  document.getElementById("buy_premium").addEventListener("click", e => {
     if (promo.value.toLowerCase() == "10МЯУ") {
       localStorage.setItem("premium", "kostya");
       hasPremium = true;
