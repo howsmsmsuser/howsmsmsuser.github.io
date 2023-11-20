@@ -1,41 +1,16 @@
 <!DOCTYPE html>
 <html>
-<body>
-  <h1 id="type"></h1>
-  
-  <h2 id="text"></h2>
-  <h2 id="cert">Сертицировано ООО "ДРУЖНЫЙ БЕЛЫЙ КОТ" ИНН 5406305323</h2>
-  
-  <details id="creator_folder">
-    <summary>Создать свой сертификат</summary>
-    <div id="creator" style="display:inline-block">
-      <h2>Создать свой сертификат</h2>
-      <form id="creator_form">
-        <label for="name">Имя объекта: </label>
-        <input type="text" id="name" name="name" required minlength="1" maxlength="20" />
-        <br>
-        <label for="type_select">Тип:</label>
-        <select id="type_select" name="type_select" reqiured>
-          <option id="general" value="general" selected required>Сертификот: Обычный</option>
-          <option id="doc" value="doc" required>Сертификот: Деловой печатный документ</option>
-        </select>
-        <button id="create_btn" form>Создать</button>
-        <div id="qrout" style="display:none">
-          <h2>QR код:</h2>
-          <img id="qr">
-        </div>
-      </form>
-    </div>
-  </details>
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Rubik&display=swap" rel="stylesheet">
   <style>
-    @media (prefers-color-scheme: light) {
-      :root {
-        --text: #11080e;
-        --background: #f3e7ef;
-        --primary: #49c572;
-        --secondary: #e0d7dd;
-        --accent: #d5632a;
-      }
+    :root {
+      --text: #11080e;
+      --background: #f3e7ef;
+      --primary: #49c572;
+      --secondary: #e0d7dd;
+      --accent: #d5632a;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -46,7 +21,6 @@
         --accent: #d5632a;
       }
     }
-    @import url('https://fonts.googleapis.com/css?family=Comfortaa:700|Rubik:400');
     body {
       font-family: 'Rubik';
       font-weight: 400;
@@ -113,6 +87,34 @@
       margin: 3px;
     }
   </style>
+</head>
+<body>
+  <h1 id="type"></h1>
+  
+  <h2 id="text"></h2>
+  <h2 id="cert">Сертицировано ООО "ДРУЖНЫЙ БЕЛЫЙ КОТ" ИНН 5406305323</h2>
+  
+  <details id="creator_folder">
+    <summary>Создать свой сертификат</summary>
+    <div id="creator" style="display:inline-block">
+      <h2>Создать свой сертификат</h2>
+      <form id="creator_form">
+        <label for="name">Имя объекта: </label>
+        <input type="text" id="name" name="name" required minlength="1" maxlength="20" />
+        <br>
+        <label for="type_select">Тип:</label>
+        <select id="type_select" name="type_select" reqiured>
+          <option id="general" value="general" selected required>Сертификот: Обычный</option>
+          <option id="doc" value="doc" required>Сертификот: Деловой печатный документ</option>
+        </select>
+        <button id="create_btn" form>Создать</button>
+        <div id="qrout" style="display:none">
+          <h2>QR код:</h2>
+          <img id="qr">
+        </div>
+      </form>
+    </div>
+  </details>
   <script>
   const urlParams = new URLSearchParams(window.location.search);
   const name = urlParams.get('n');
