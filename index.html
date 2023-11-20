@@ -13,6 +13,7 @@
       <form id="creator_form">
         <label for="name">Имя объекта: </label>
         <input type="text" id="name" name="name" required minlength="1" maxlength="20" />
+        <br>
         <label for="type_select">Тип:</label>
         <select id="type_select" name="type_select" reqiured>
           <option id="general" value="general" selected required>Сертификот: Обычный</option>
@@ -27,7 +28,6 @@
     </div>
   </details>
   <style>
-    @import url('https://fonts.googleapis.com/css?family=Poppins:700|Poppins:400');
     @media (prefers-color-scheme: light) {
       :root {
         --text: #11080e;
@@ -46,9 +46,23 @@
         --accent: #d5632a;
       }
     }
+    @import url('https://fonts.googleapis.com/css?family=Comfortaa:700|Rubik:400');
     body {
-      font-family: 'Poppins';
+      font-family: 'Rubik';
       font-weight: 400;
+    }
+    h1, h2, h3, h4, h5 {
+      font-family: 'Comfortaa';
+      font-weight: 700;
+    }
+    html {font-size: 100%;} /* 16px */
+    h1 {font-size: 3.366rem; /* 53.92px */}
+    h2 {font-size: 2.525rem; /* 40.32px */}
+    h3 {font-size: 1.894rem; /* 30.24px */}
+    h4 {font-size: 1.421rem; /* 22.72px */}
+    h5 {font-size: 1.066rem; /* 17.12px */}
+    small {font-size: 0.600rem; /* 9.6px */}
+    body {
       display: flex;
       flex-flow: column;
       align-items: center;
@@ -56,27 +70,36 @@
       color: var(--text);
       background-color: var(--background);
     }
-    h1, h2, h3, h4, h5 {
-      font-family: 'Poppins';
-      font-weight: 700;
-    }
-    html {font-size: 100%;} /* 16px */
-    h1 {font-size: 4.210rem; /* 67.36px */}
-    h2 {font-size: 3.158rem; /* 50.56px */}
-    h3 {font-size: 2.369rem; /* 37.92px */}
-    h4 {font-size: 1.777rem; /* 28.48px */}
-    h5 {font-size: 1.333rem; /* 21.28px */}
-    small {font-size: 0.750rem; /* 12px */}
     details {
-      border: 1px solid #aaa;
       border-radius: 4px;
       padding: 0.5em 0.5em 0;
       background-color: var(--primary);
     }
     summary {
       font-weight: bold;
-      margin: -0.5em -0.5em 0;
-      padding: 0.5em;
+      padding: 1rem;
+      display: block;
+      padding-left: 2.2rem;
+      position: relative;
+      cursor: pointer;
+    }
+    summary:before {
+      content: '';
+      border-width: .4rem;
+      border-style: solid;
+      border-color: transparent transparent transparent #fff;
+      position: absolute;
+      top: 1.3rem;
+      left: 1rem;
+      transform: rotate(0);
+      transform-origin: .2rem 50%;
+      transition: .25s transform ease;
+    }
+    details[open] > summary:before {
+      transform: rotate(90deg);
+    }
+    details summary::-webkit-details-marker {
+      display:none;
     }
     details[open] {
       padding: 0.5em;
