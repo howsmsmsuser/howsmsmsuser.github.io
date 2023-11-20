@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
-<body style="text-align:center;font-family:sans-serif">
+<body>
   <h1 id="type"></h1>
+  
   <h2 id="text"></h2>
   <h2 id="cert">Сертицировано ООО "ДРУЖНЫЙ БЕЛЫЙ КОТ" ИНН 5406305323</h2>
-  <details>
+  
+  <details id="creator_folder">
     <summary>Создать свой сертификат</summary>
-    <div id="creator" style="width:40%;display:inline-block">
+    <div id="creator" style="display:inline-block">
       <h2>Создать свой сертификат</h2>
       <form id="creator_form">
         <label for="name">Имя объекта: </label>
@@ -15,7 +17,6 @@
           <legend>Тип:</legend>
           <select id="type_select" name="type_select" reqiured>
             <option id="general" value="general" selected required>Сертификот: Обычный</option>
-            <br>
             <option id="doc" value="doc" required>Сертификот: Деловой печатный документ</option>
           </select>
         </fieldset>
@@ -28,6 +29,46 @@
     </div>
   </details>
   <style>
+    @import url('https://fonts.googleapis.com/css?family=Poppins:700|Poppins:400');
+    @media (prefers-color-scheme: light) {
+      :root {
+        --text: #11080e;
+        --background: #f3e7ef;
+        --primary: #49c572;
+        --secondary: #e0d7dd;
+        --accent: #d5632a;
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text: #f7eef4;
+        --background: #180c14;
+        --primary: #3ab663;
+        --secondary: #281f25;
+        --accent: #d5632a;
+      }
+    }
+    body {
+      font-family: 'Poppins';
+      font-weight: 400;
+      display: flex;
+      flex-flow: column;
+      align-items: center;
+      text-align: center;
+      color: var(--text);
+      background-color: var(--background);
+    }
+    h1, h2, h3, h4, h5 {
+      font-family: 'Poppins';
+      font-weight: 700;
+    }
+    html {font-size: 100%;} /* 16px */
+    h1 {font-size: 4.210rem; /* 67.36px */}
+    h2 {font-size: 3.158rem; /* 50.56px */}
+    h3 {font-size: 2.369rem; /* 37.92px */}
+    h4 {font-size: 1.777rem; /* 28.48px */}
+    h5 {font-size: 1.333rem; /* 21.28px */}
+    small {font-size: 0.750rem; /* 12px */}
     details {
       border: 1px solid #aaa;
       border-radius: 4px;
@@ -55,9 +96,11 @@
   const text_text = document.getElementById("text");
   const cert_text = document.getElementById("cert");
   const creator_form = document.getElementById("creator_form");
+  const creator_folder = document.getElementById("creator_folder");
   const create_btn = document.getElementById("create_btn");
   const qr = document.getElementById("qr");
   const qrout = document.getElementById("qrout");
+  const hasPremium = localStorage.getItem("premium") === "kostya"
   create_btn.addEventListener("click", e => {
     if (!creator_form.reportValidity()) return;
     url = `https://howsmsmsuser.github.io/p.github.io/?n=${creator_form.elements["name"].value}&t=${creator_form.elements["type_select"].selectedIndex}`;
@@ -73,6 +116,11 @@
     case '1':
       type_text.innerText = "Сертификот";
       text_text.innerText = `Объект ${name} утверждён как "Деловой печатный документ"`;
+      break
+    case null:
+      type_text.innerText = "";
+      cert_text.innerText = "";
+      creator_folder.open = true;
       break
     default:
       type_text.innerText = "Ошибка";
