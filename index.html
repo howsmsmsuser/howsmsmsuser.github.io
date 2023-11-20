@@ -30,6 +30,11 @@
       font-weight: 700;
     }
     html {font-size: 100%;} /* 16px */
+    @media (max-aspect-ratio: 1/1) { /*Mobile screen test*/
+      * {
+        font-size: max(100%, 2vw);
+      }
+    }
     h1 {font-size: 3.366rem; /* 53.92px */}
     h2 {font-size: 2.525rem; /* 40.32px */}
     h3 {font-size: 1.894rem; /* 30.24px */}
@@ -123,9 +128,14 @@
         <br><br>
         <label for="type_select">Тип:</label>
         <select id="type_select" name="type_select" reqiured>
-          <option id="general" value="general" selected required>Сертификот: Обычный</option>
-          <option id="doc" value="doc" required>Сертификот: Деловой печатный документ</option>
+          <option id="generaltype" value="generaltype" selected required>Сертификот: Обычный</option>
+          <option id="doctype" value="doctype" required>Сертификот: Деловой печатный документ</option>
+          <option id="customtype" value="customtype" required>Сертифигав: Свой тип</option>
         </select>
+        <br>
+        <label for="customtypetype">Тип объекта: </label>
+        <input type="text" id="customtypetype" name="customtypetype" required minlength="1" maxlength="20" />
+        <br>
         <button id="create_btn" form>Создать</button>
         <div id="qrout" style="display:none">
           <h3>QR код:</h3>
@@ -162,15 +172,29 @@
   const premiumprice = document.getElementById("premium_price");
   var hasPremium = localStorage.getItem("premium") === "kostya"
   if (hasPremium) ad.style.display = "none";
+  if (promo.value.toLowerCase() == "10мяу") premiumprice.innerText = "0";
   create_btn.addEventListener("click", e => {
     if (!creator_form.reportValidity()) return;
+    if (!hasPremium && creator_form.elements["type_select"].value == "customtype") {
+      alert("Сертифигав доступен только с Костя Премиум");
+      return;
+    }
     url = `https://howsmsmsuser.github.io/p.github.io/?n=${creator_form.elements["name"].value}&t=${creator_form.elements["type_select"].selectedIndex}`;
     qrurl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(encodeURIComponent(url))}&size=300x300`;
     qrout.style.display = "block";
     qr.src = qrurl;
   })
+  creator_form.elements["type_select"].addEventListener("change", e => {
+    if (e.target.value == "customtype") {
+      if (!hasPremium) {
+        alert("Сертифигав доступен только с Костя Премиум");
+        return;
+      }
+      
+    }
+  })
   promo.addEventListener("input", e => {
-    if (promo.value.toLowerCase() == "10мяу") {
+    if (e.target.value.toLowerCase() == "10мяу") {
       premiumprice.innerText = "0";
     } else {
       premiumprice.innerText = "100000000";
