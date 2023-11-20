@@ -89,6 +89,10 @@
       padding: .3em;
       background-color: var(--primary);
       color: var(--background);
+      transition: filter .5s;
+    }
+    .bigbtn:hover {
+      filter: brightness(0.85);
     }
     #qr {
       width: 10em;
@@ -134,8 +138,11 @@
     <h1>Костя Премиум</h1>
     <h3>Создавайте сертификаты без ограничений!</h3>
     <p>Вы сможете создать свой уникальный сертификат!</p>
-    <h4>Всего за <span id="premium_price">1000000</span>₽</h4>
-    <button>Купить</button>
+    <h4>Всего за <span id="premium_price">100000000</span>₽</h4>
+    <label for="promocode">Промокод:</label>
+    <input type="text" id="promocode" name="promocode" required minlength="1" maxlength="5" size="10" spellcheck="false" />
+    <br>
+    <button id="buy_premium">Купить</button>
   </div>
   <script>
   const urlParams = new URLSearchParams(window.location.search);
@@ -150,13 +157,34 @@
   const create_btn = document.getElementById("create_btn");
   const qr = document.getElementById("qr");
   const qrout = document.getElementById("qrout");
-  const hasPremium = localStorage.getItem("premium") === "kostya"
+  const ad = document.getElementById("premium_ad");
+  const promo = document.getElementById("promocode");
+  const premiumprice = document.getElementById("premium_price");
+  var hasPremium = localStorage.getItem("premium") === "kostya"
+  if (hasPremium) ad.style.display = "none";
   create_btn.addEventListener("click", e => {
     if (!creator_form.reportValidity()) return;
     url = `https://howsmsmsuser.github.io/p.github.io/?n=${creator_form.elements["name"].value}&t=${creator_form.elements["type_select"].selectedIndex}`;
     qrurl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(encodeURIComponent(url))}&size=300x300`;
     qrout.style.display = "block";
     qr.src = qrurl;
+  })
+  promo.addEventListener("input", e => {
+    if (promo.value.toLowerCase() == "10МЯУ") {
+      premiumprice.innerText = "0";
+    } else {
+      premiumprice.innerText = "100000000";
+    }
+  })
+  document.getElementById("create_btn").addEventListener("click", e => {
+    if (promo.value.toLowerCase() == "10МЯУ") {
+      localStorage.setItem("premium", "kostya");
+      hasPremium = true;
+      ad.style.display = "none";
+      alert("Вы купили Костя Премиум!");
+    } else {
+      alert("У вас таких денег нет.");
+    }
   })
   switch(type) {
     case '0':
