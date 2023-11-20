@@ -46,8 +46,9 @@
     }
     details {
       border-radius: 4px;
-      padding: 0.5em 0.5em 0;
       background-color: var(--primary);
+      color: var(--background);
+      width: 75%;
     }
     summary {
       font-weight: bold;
@@ -76,15 +77,19 @@
       display:none;
     }
     details[open] {
-      padding: 0.5em;
+      padding: 0 0 1em;
     }
     details[open] summary {
       margin-bottom: 0.5em;
     }
-    input, button {
+    input, button, summary {
       border: 0;
       border-radius: 4px;
       margin: 3px;
+    }
+    #qr {
+      width: 10em;
+      image-rendering: crisp-edges;
     }
   </style>
 </head>
@@ -92,12 +97,12 @@
   <h1 id="type"></h1>
   
   <h2 id="text"></h2>
-  <h2 id="cert">Сертицировано ООО "ДРУЖНЫЙ БЕЛЫЙ КОТ" ИНН 5406305323</h2>
+  <p id="cert">Сертицировано ООО "ДРУЖНЫЙ БЕЛЫЙ КОТ" ИНН 5406305323</p>
   
   <details id="creator_folder">
     <summary>Создать свой сертификат</summary>
     <div id="creator" style="display:inline-block">
-      <h2>Создать свой сертификат</h2>
+      <h3>Создать свой сертификат</h3>
       <form id="creator_form">
         <label for="name">Имя объекта: </label>
         <input type="text" id="name" name="name" required minlength="1" maxlength="20" />
@@ -109,7 +114,7 @@
         </select>
         <button id="create_btn" form>Создать</button>
         <div id="qrout" style="display:none">
-          <h2>QR код:</h2>
+          <h3>QR код:</h3>
           <img id="qr">
         </div>
       </form>
@@ -132,7 +137,7 @@
   create_btn.addEventListener("click", e => {
     if (!creator_form.reportValidity()) return;
     url = `https://howsmsmsuser.github.io/p.github.io/?n=${creator_form.elements["name"].value}&t=${creator_form.elements["type_select"].selectedIndex}`;
-    qrurl = `http://qrcoder.ru/code/?${encodeURIComponent(encodeURIComponent(url))}&2&1`;
+    qrurl = `http://qrcoder.ru/code/?${encodeURIComponent(encodeURIComponent(url))}&4&1`;
     qrout.style.display = "block";
     qr.src = qrurl;
   })
