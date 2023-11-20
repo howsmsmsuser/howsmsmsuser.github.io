@@ -79,17 +79,27 @@
     details[open] {
       padding: 0 0 1em;
     }
-    details[open] summary {
-      margin-bottom: 0.5em;
-    }
-    input, button, summary {
+    input, button, select {
       border: 0;
       border-radius: 4px;
       margin: 3px;
     }
+    .bigbtn {
+      font-size: 2.525rem;
+      padding: .3em;
+      background-color: var(--primary);
+      color: var(--background);
+    }
     #qr {
       width: 10em;
       image-rendering: crisp-edges;
+    }
+    #premium_ad {
+      width: 75%;
+      background-color: var(--accent);
+      margin-top: 8vh;
+      border-radius: 3px;
+      color: var(--background);
     }
   </style>
 </head>
@@ -106,7 +116,7 @@
       <form id="creator_form">
         <label for="name">Имя объекта: </label>
         <input type="text" id="name" name="name" required minlength="1" maxlength="20" />
-        <br>
+        <br><br>
         <label for="type_select">Тип:</label>
         <select id="type_select" name="type_select" reqiured>
           <option id="general" value="general" selected required>Сертификот: Обычный</option>
@@ -120,6 +130,13 @@
       </form>
     </div>
   </details>
+  <div id="premium_ad">
+    <h1>Костя Премиум</h1>
+    <h3>Создавайте сертификаты без ограничений!</h3>
+    <p>Вы сможете создать свой уникальный сертификат!</p>
+    <h4>Всего за <span id="premium_price">1000000</span>₽</h4>
+    <button>Купить</button>
+  </div>
   <script>
   const urlParams = new URLSearchParams(window.location.search);
   const name = urlParams.get('n');
@@ -137,7 +154,7 @@
   create_btn.addEventListener("click", e => {
     if (!creator_form.reportValidity()) return;
     url = `https://howsmsmsuser.github.io/p.github.io/?n=${creator_form.elements["name"].value}&t=${creator_form.elements["type_select"].selectedIndex}`;
-    qrurl = `http://qrcoder.ru/code/?${encodeURIComponent(encodeURIComponent(url))}&4&1`;
+    qrurl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(encodeURIComponent(url))}&size=300x300`;
     qrout.style.display = "block";
     qr.src = qrurl;
   })
@@ -149,6 +166,10 @@
     case '1':
       type_text.innerText = "Сертификот";
       text_text.innerText = `Объект ${name} утверждён как "Деловой печатный документ"`;
+      break
+    case '2':
+      type_text.innerText = "Сертифигав";
+      text_text.innerText = `Объект ${name} сертифицирован как ${urlParams.get('c')}`;
       break
     case null:
       type_text.innerText = "";
