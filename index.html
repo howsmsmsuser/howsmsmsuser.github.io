@@ -176,7 +176,13 @@
   var hasPremium = localStorage.getItem("premium") === "kostya"
   if (hasPremium) ad.style.display = "none";
   if (promo.value.toLowerCase() == "10мяу") premiumprice.innerText = "0";
-  customtypeselect.style.display = creator_form.elements["type_select"].value=="customtype"?"block":"none";
+  if (creator_form.elements["type_select"].value == "customtype") {
+    customtypeselect.style.display = "block";
+    creator_form.elements["customtypetype"].removeAttribute("readonly");
+  } else {
+    customtypeselect.style.display = "none";
+    creator_form.elements["customtypetype"].setAttribute("readonly", "");
+  }
   
   create_btn.addEventListener("click", e => {
     if (!creator_form.reportValidity()) return;
@@ -200,8 +206,10 @@
         return;
       }
       customtypeselect.style.display = "block";
+      creator_form.elements["customtypetype"].removeAttribute("readonly");
     } else {
       customtypeselect.style.display = "none";
+      creator_form.elements["customtypetype"].setAttribute("readonly", "");
     }
   })
   promo.addEventListener("input", e => {
