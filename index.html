@@ -155,6 +155,7 @@
     <br>
     <button id="buy_premium" class="bigbtn">Купить</button>
   </div>
+  <p>2023 Мякус Технолоджис</p>
   <script>
   const urlParams = new URLSearchParams(window.location.search);
   const name = urlParams.get('n');
@@ -175,6 +176,8 @@
   var hasPremium = localStorage.getItem("premium") === "kostya"
   if (hasPremium) ad.style.display = "none";
   if (promo.value.toLowerCase() == "10мяу") premiumprice.innerText = "0";
+  customtypeselect.style.display = creator_form.elements["type_select"].value=="customtype"?"block":"none";
+  
   create_btn.addEventListener("click", e => {
     if (!creator_form.reportValidity()) return;
     customparams = "";
