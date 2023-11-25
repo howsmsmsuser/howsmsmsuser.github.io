@@ -192,7 +192,9 @@
           <input type="text" id="customtypetype" name="customtypetype" required minlength="1" maxlength="20" />
         </div>
         <br>
+        <label for="orgnameinp">Название организации: </label>
         <input type="text" id="orgnameinp" name="orgnameinp" required minlength="3" maxlength="20" />
+        <br>
         <button id="create_btn" form>Создать</button>
         <div id="qrout" style="display:none">
           <h3>QR код:</h3>
@@ -233,6 +235,28 @@
     var hasPremium = localStorage.getItem("premium") === "kostya";
     if (localStorage.getItem("orgs") === null) localStorage.setItem("orgs", "[]");
     var trustedOrgs = JSON.parse(localStorage.getItem("orgs"));
+    if (localStorage.getItem("privatekey") === null || localStorage.getItem("publickey") === null) {
+      crypto.subtle.generateKey(
+        {
+          name: "RSA-PSS",
+          // Consider using a 4096-bit key for systems that require long-term security
+          modulusLength: 2048,
+          publicExponent: new Uint8Array([1, 0, 1]),
+          hash: "SHA-256",
+        },
+        true,
+        ["sign", "verify"]
+      ).then((keyPair) => {
+        var key = keyPair;
+        crypto.subtle.exportKey("jwk", key.publicKey).then((jwkobject) => {localStorage.setItem("publickey", JSON.stringify(jwkobject))});
+        crypto.subtle.exportKey("jwk", key.privateKey).then((jwkobject) => {localStorage.setItem("privatekey", JSON.stringify(jwkobject))});
+      });
+    } else {
+      var key = {
+        "publicKey": crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("publickey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["sign", "verify"]),
+        "privateKey": crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("privatekey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["sign", "verify"])
+      };
+    }
     if (hasPremium) ad.style.display = "none";
     if (promo.value.toLowerCase() == "10мяу") premiumprice.innerText = "0";
     if (creator_form.elements["type_select"].value == "customtype") {
