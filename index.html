@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +13,7 @@
       --secondary: #e0d7dd;
       --accent: #d5632a;
     }
+
     @media (prefers-color-scheme: dark) {
       :root {
         --text: #f7eef4;
@@ -21,26 +23,65 @@
         --accent: #d5632a;
       }
     }
+
     body {
       font-family: 'Rubik';
       font-weight: 400;
     }
-    h1, h2, h3, h4, h5 {
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
       font-family: 'Comfortaa';
       font-weight: 700;
     }
-    html {font-size: 100%;} /* 16px */
-    @media (max-aspect-ratio: 1/1) { /*Mobile screen test*/
-      html, * {
+
+    html {
+      font-size: 100%;
+    }
+
+    /* 16px */
+    @media (max-aspect-ratio: 1/1) {
+
+      /*Mobile screen test*/
+      html,
+      * {
         font-size: max(100%, 2.5vw);
       }
     }
-    h1 {font-size: 3.366rem; /* 53.92px */}
-    h2 {font-size: 2.525rem; /* 40.32px */}
-    h3 {font-size: 1.894rem; /* 30.24px */}
-    h4 {font-size: 1.421rem; /* 22.72px */}
-    h5 {font-size: 1.066rem; /* 17.12px */}
-    small {font-size: 0.600rem; /* 9.6px */}
+
+    h1 {
+      font-size: 3.366rem;
+      /* 53.92px */
+    }
+
+    h2 {
+      font-size: 2.525rem;
+      /* 40.32px */
+    }
+
+    h3 {
+      font-size: 1.894rem;
+      /* 30.24px */
+    }
+
+    h4 {
+      font-size: 1.421rem;
+      /* 22.72px */
+    }
+
+    h5 {
+      font-size: 1.066rem;
+      /* 17.12px */
+    }
+
+    small {
+      font-size: 0.600rem;
+      /* 9.6px */
+    }
+
     body {
       display: flex;
       flex-flow: column;
@@ -49,12 +90,14 @@
       color: var(--text);
       background-color: var(--background);
     }
+
     details {
       border-radius: 4px;
       background-color: var(--primary);
       color: var(--background);
       width: 90%;
     }
+
     summary {
       font-weight: bold;
       padding: 1rem;
@@ -63,6 +106,7 @@
       position: relative;
       cursor: pointer;
     }
+
     summary:before {
       content: '';
       border-width: .4rem;
@@ -75,20 +119,27 @@
       transform-origin: .2rem 50%;
       transition: .25s transform ease;
     }
-    details[open] > summary:before {
+
+    details[open]>summary:before {
       transform: rotate(90deg);
     }
+
     details summary::-webkit-details-marker {
-      display:none;
+      display: none;
     }
+
     details[open] {
       padding: 0 0 1em;
     }
-    input, button, select {
+
+    input,
+    button,
+    select {
       border: 0;
       border-radius: 4px;
       margin: 3px;
     }
+
     .bigbtn {
       font-size: 2.525rem;
       padding: .3em;
@@ -96,13 +147,16 @@
       color: var(--background);
       transition: filter .5s;
     }
+
     .bigbtn:hover {
       filter: brightness(0.85);
     }
+
     #qr {
       width: 10em;
       image-rendering: crisp-edges;
     }
+
     #pd {
       width: 90%;
       background-color: var(--accent);
@@ -112,12 +166,13 @@
     }
   </style>
 </head>
+
 <body>
   <h1 id="type"></h1>
-  
+
   <h2 id="text"></h2>
   <p id="cert">Сертицировано ООО "ДРУЖНЫЙ БЕЛЫЙ КОТ" ИНН 5406305323</p>
-  
+
   <details id="creator_folder">
     <summary>Создать свой сертификат</summary>
     <div id="creator" style="display:inline-block">
@@ -125,7 +180,7 @@
       <form id="creator_form">
         <label for="name">Имя объекта: </label>
         <input type="text" id="name" name="name" required minlength="1" maxlength="20" />
-        <br><br>
+        <br>
         <label for="type_select">Тип:</label>
         <select id="type_select" name="type_select" reqiured>
           <option id="generaltype" value="generaltype" selected required>Сертификот: Обычный</option>
@@ -137,6 +192,7 @@
           <input type="text" id="customtypetype" name="customtypetype" required minlength="1" maxlength="20" />
         </div>
         <br>
+        <input type="text" id="orgnameinp" name="orgnameinp" required minlength="3" maxlength="20" />
         <button id="create_btn" form>Создать</button>
         <div id="qrout" style="display:none">
           <h3>QR код:</h3>
@@ -151,107 +207,111 @@
     <p>Вы сможете создать свой уникальный сертификат!</p>
     <h4>Всего за <span id="premium_price">100000000</span>₽</h4>
     <label for="promocode">Промокод:</label>
-    <input type="text" id="promocode" name="promocode" required minlength="1" maxlength="5" size="10" spellcheck="false" />
+    <input type="text" id="promocode" name="promocode" required minlength="1" maxlength="5" size="10"
+      spellcheck="false" />
     <br>
     <button id="buy_premium" class="bigbtn">Купить</button>
   </div>
   <p>2023 Мякус Технолоджис</p>
   <script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const name = urlParams.get('n');
-  const type = urlParams.get('t');
-  console.log(name,type);
-  const type_text = document.getElementById("type");
-  const text_text = document.getElementById("text");
-  const cert_text = document.getElementById("cert");
-  const creator_form = document.getElementById("creator_form");
-  const creator_folder = document.getElementById("creator_folder");
-  const create_btn = document.getElementById("create_btn");
-  const qr = document.getElementById("qr");
-  const qrout = document.getElementById("qrout");
-  const ad = document.getElementById("pd");
-  const promo = document.getElementById("promocode");
-  const premiumprice = document.getElementById("premium_price");
-  const customtypeselect = document.getElementById("customtypeselect");
-  var hasPremium = localStorage.getItem("premium") === "kostya"
-  if (hasPremium) ad.style.display = "none";
-  if (promo.value.toLowerCase() == "10мяу") premiumprice.innerText = "0";
-  if (creator_form.elements["type_select"].value == "customtype") {
-    customtypeselect.style.display = "block";
-    creator_form.elements["customtypetype"].removeAttribute("readonly");
-  } else {
-    customtypeselect.style.display = "none";
-    creator_form.elements["customtypetype"].setAttribute("readonly", "");
-  }
-  
-  create_btn.addEventListener("click", e => {
-    if (!creator_form.reportValidity()) return;
-    customparams = "";
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get('n');
+    const type = urlParams.get('t');
+    console.log(name, type);
+    const type_text = document.getElementById("type");
+    const text_text = document.getElementById("text");
+    const cert_text = document.getElementById("cert");
+    const creator_form = document.getElementById("creator_form");
+    const creator_folder = document.getElementById("creator_folder");
+    const create_btn = document.getElementById("create_btn");
+    const qr = document.getElementById("qr");
+    const qrout = document.getElementById("qrout");
+    const ad = document.getElementById("pd");
+    const promo = document.getElementById("promocode");
+    const premiumprice = document.getElementById("premium_price");
+    const customtypeselect = document.getElementById("customtypeselect");
+    var hasPremium = localStorage.getItem("premium") === "kostya";
+    if (localStorage.getItem("orgs") === null) localStorage.setItem("orgs", "[]");
+    var trustedOrgs = JSON.parse(localStorage.getItem("orgs"));
+    if (hasPremium) ad.style.display = "none";
+    if (promo.value.toLowerCase() == "10мяу") premiumprice.innerText = "0";
     if (creator_form.elements["type_select"].value == "customtype") {
-      if (!hasPremium) {
-        alert("Сертифигав доступен только с Костя Премиум");
-        return;
-      }
-      customparams += `c=${creator_form.elements["customtypetype"].value}`;
-    }
-    url = `https://howsmsmsuser.github.io/p.github.io/?n=${creator_form.elements["name"].value}&t=${creator_form.elements["type_select"].selectedIndex}&${customparams}`;
-    qrurl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=300x300`;
-    qrout.style.display = "block";
-    qr.src = qrurl;
-  })
-  creator_form.elements["type_select"].addEventListener("change", e => {
-    if (e.target.value == "customtype") {
-      if (!hasPremium) {
-        alert("Сертифигав доступен только с Костя Премиум");
-        return;
-      }
       customtypeselect.style.display = "block";
       creator_form.elements["customtypetype"].removeAttribute("readonly");
     } else {
       customtypeselect.style.display = "none";
       creator_form.elements["customtypetype"].setAttribute("readonly", "");
     }
-  })
-  promo.addEventListener("input", e => {
-    if (e.target.value.toLowerCase() == "10мяу") {
-      premiumprice.innerText = "0";
-    } else {
-      premiumprice.innerText = "100000000";
+
+    create_btn.addEventListener("click", e => {
+      if (!creator_form.reportValidity()) return;
+      customparams = "";
+      if (creator_form.elements["type_select"].value == "customtype") {
+        if (!hasPremium) {
+          alert("Сертифигав доступен только с Костя Премиум");
+          return;
+        }
+        customparams += `c=${encodeURIComponent(creator_form.elements["customtypetype"].value)}`;
+      }
+      url = `https://howsmsmsuser.github.io/p.github.io/?n=${encodeURIComponent(creator_form.elements["name"].value)}&t=${creator_form.elements["type_select"].selectedIndex}&${customparams}`;
+      qrurl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=300x300`;
+      qrout.style.display = "block";
+      qr.src = qrurl;
+    })
+    creator_form.elements["type_select"].addEventListener("change", e => {
+      if (e.target.value == "customtype") {
+        if (!hasPremium) {
+          alert("Сертифигав доступен только с Костя Премиум");
+          return;
+        }
+        customtypeselect.style.display = "block";
+        creator_form.elements["customtypetype"].removeAttribute("readonly");
+      } else {
+        customtypeselect.style.display = "none";
+        creator_form.elements["customtypetype"].setAttribute("readonly", "");
+      }
+    })
+    promo.addEventListener("input", e => {
+      if (e.target.value.toLowerCase() == "10мяу") {
+        premiumprice.innerText = "0";
+      } else {
+        premiumprice.innerText = "100000000";
+      }
+    })
+    document.getElementById("buy_premium").addEventListener("click", e => {
+      if (promo.value.toLowerCase() == "10мяу") {
+        localStorage.setItem("premium", "kostya");
+        hasPremium = true;
+        ad.style.display = "none";
+        alert("Вы купили Костя Премиум!");
+      } else {
+        alert("У вас таких денег нет.");
+      }
+    })
+    switch (type) {
+      case '0':
+        type_text.innerText = "Сертификот";
+        text_text.innerText = `Объект ${name} сертифицирован`;
+        break
+      case '1':
+        type_text.innerText = "Сертификот";
+        text_text.innerText = `Объект ${name} утверждён как "Деловой печатный документ"`;
+        break
+      case '2':
+        type_text.innerText = "Сертифигав";
+        text_text.innerText = `Объект ${name} сертифицирован как ${urlParams.get('c')}`;
+        break
+      case null:
+        type_text.innerText = "";
+        cert_text.innerText = "";
+        creator_folder.open = true;
+        break
+      default:
+        type_text.innerText = "Ошибка";
+        cert_text.innerText = "";
+        break
     }
-  })
-  document.getElementById("buy_premium").addEventListener("click", e => {
-    if (promo.value.toLowerCase() == "10мяу") {
-      localStorage.setItem("premium", "kostya");
-      hasPremium = true;
-      ad.style.display = "none";
-      alert("Вы купили Костя Премиум!");
-    } else {
-      alert("У вас таких денег нет.");
-    }
-  })
-  switch(type) {
-    case '0':
-      type_text.innerText = "Сертификот";
-      text_text.innerText = `Объект ${name} сертифицирован`;
-      break
-    case '1':
-      type_text.innerText = "Сертификот";
-      text_text.innerText = `Объект ${name} утверждён как "Деловой печатный документ"`;
-      break
-    case '2':
-      type_text.innerText = "Сертифигав";
-      text_text.innerText = `Объект ${name} сертифицирован как ${urlParams.get('c')}`;
-      break
-    case null:
-      type_text.innerText = "";
-      cert_text.innerText = "";
-      creator_folder.open = true;
-      break
-    default:
-      type_text.innerText = "Ошибка";
-      cert_text.innerText = "";
-      break
-  }
   </script>
 </body>
+
 </html>
