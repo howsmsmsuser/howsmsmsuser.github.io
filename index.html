@@ -292,10 +292,9 @@
         crypto.subtle.exportKey("jwk", key.privateKey).then((jwkobject) => {localStorage.setItem("privatekey", JSON.stringify(jwkobject))});
       });
     } else {
-      key = {
-        "publicKey": crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("publickey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["verify"]),
-        "privateKey": crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("privatekey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["sign"])
-      };
+      key = {}
+      crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("publickey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["verify"]).then((pubkey) => {key.publicKey = pubkey});
+      crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("privatekey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["sign"]).then((privkey) => {key.privateKey = privkey});
     }
     if (hasPremium) ad.style.display = "none";
     if (promo.value.toLowerCase() == "10мяу") premiumprice.innerText = "0";
