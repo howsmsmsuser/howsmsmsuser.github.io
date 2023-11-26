@@ -250,6 +250,9 @@
       let {[prop]: omit, ...res} = obj
       return res
     }
+    function typedArrayToBuffer(array) {
+      return array.buffer.slice(array.byteOffset, array.byteLength + array.byteOffset)
+    }
     const urlParams = new URLSearchParams(window.location.search);
     const name = urlParams.get('n');
     const type = urlParams.get('t');
@@ -290,8 +293,8 @@
       });
     } else {
       key = {
-        "publicKey": crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("publickey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["sign", "verify"]),
-        "privateKey": crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("privatekey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["sign", "verify"])
+        "publicKey": crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("publickey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["verify"]),
+        "privateKey": crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("privatekey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["sign"])
       };
     }
     if (hasPremium) ad.style.display = "none";
@@ -325,7 +328,7 @@
           saltLength: 16,
         },
         key.privateKey,
-        all_data
+        typedArrayToBuffer(all_data)
       ).then((signature) => {
         crypto.subtle.exportKey("jwk", key.publicKey).then((jwkobject) => {
           if (!(orgname in trustedOrgs)) trustedOrgs[orgname] = [];
