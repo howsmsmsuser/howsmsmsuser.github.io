@@ -272,6 +272,7 @@
     function saveOrgs() {
       localStorage.setItem("orgs", JSON.stringify(trustedOrgs)); // Save orgs
     }
+    var key;
     if (localStorage.getItem("privatekey") === null || localStorage.getItem("publickey") === null) {
       crypto.subtle.generateKey(
         {
@@ -283,12 +284,12 @@
         true,
         ["sign", "verify"]
       ).then((keyPair) => {
-        var key = keyPair;
+        key = keyPair;
         crypto.subtle.exportKey("jwk", key.publicKey).then((jwkobject) => {localStorage.setItem("publickey", JSON.stringify(jwkobject))});
         crypto.subtle.exportKey("jwk", key.privateKey).then((jwkobject) => {localStorage.setItem("privatekey", JSON.stringify(jwkobject))});
       });
     } else {
-      var key = {
+      key = {
         "publicKey": crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("publickey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["sign", "verify"]),
         "privateKey": crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("privatekey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["sign", "verify"])
       };
