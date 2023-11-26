@@ -332,7 +332,7 @@
         crypto.subtle.exportKey("jwk", key.publicKey).then((jwkobject) => {
           if (!(orgname in trustedOrgs)) trustedOrgs[orgname] = [];
           entries_with_key = trustedOrgs[orgname].filter((entry) => {entry["key"] == jwkobject});
-          if (entries_with_key) {
+          if (entries_with_key.length) {
             // Increment key uses when signing (probably bad)
             //for (entry of entries_with_key) {entry["uses"]++}
             thisorgentry = entries_with_key[0];
