@@ -321,7 +321,7 @@
         customparams += `c=${encodeURIComponent(creator_form.elements["customtypetype"].value)}`;
         textenc.encodeInto(creator_form.elements["customtypetype"].value, all_data);
       }
-      all_data = textenc.encodeInto(creator_form.elements["type_select"].selectedIndex+creator_form.elements["name"].value+"0"+orgname, all_data);
+      textenc.encodeInto(creator_form.elements["type_select"].selectedIndex+creator_form.elements["name"].value+"0"+orgname, all_data);
       crypto.subtle.sign(
         {
           name: "RSA-PSS",
