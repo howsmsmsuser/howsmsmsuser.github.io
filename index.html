@@ -347,7 +347,7 @@
           saveOrgs();
           trustedOrgslen = Object.keys(trustedOrgs).length
           if (trustedOrgslen-1 >= 1) { // If we can take a sample
-            randomorgs = arr_sample(arr_omit(trustedOrgs, orgname), Math.min(trustedOrgslen-1, 2), false);
+            randomorgs = arr_sample(Object.values(arr_omit(trustedOrgs, orgname)), Math.min(trustedOrgslen-1, 2), false);
             console.info("Included random orgs:", randomorgs);
           }
           
