@@ -345,8 +345,9 @@
           };
           console.debug("signed cert, all trusted orgs now are:", trustedOrgs);
           saveOrgs();
-          if (trustedOrgs.length-1 >= 1) { // If we can take a sample
-            randomorgs = arr_sample(arr_omit(trustedOrgs, orgname), Math.min(trustedOrgs.length-1, 2), false);
+          trustedOrgslen = Object.keys(trustedOrgs).length
+          if (trustedOrgslen-1 >= 1) { // If we can take a sample
+            randomorgs = arr_sample(arr_omit(trustedOrgs, orgname), Math.min(trustedOrgslen-1, 2), false);
             console.info("Included random orgs:", randomorgs);
           }
           
