@@ -215,7 +215,41 @@
     <button id="buy_premium" class="bigbtn">Купить</button>
   </div>
   <p>2023 Мякус Технолоджис</p>
+  <script src="https://cdn.jsdelivr.net/npm/@msgpack/msgpack@2"></script>
   <script>
+    const INCLUDEORGS = 2; // Include 2 random orgs in the link
+    // Chooses k unique random elements from pool.
+    function arr_sample(pool, k, destructive) {
+        var n = pool.length;
+        
+        if (k < 0 || k > n)
+            throw new RangeError("Sample larger than population or is negative");
+        
+        if (destructive || n <= (k <= 5 ? 21 : 21 + Math.pow(4, Math.ceil(Math.log(k*3) / Math.log(4))))) {
+            if (!destructive)
+                pool = Array.prototype.slice.call(pool);
+            for (var i = 0; i < k; i++) { // invariant: non-selected at [i,n)
+                var j = i + Math.random() * (n - i) | 0;
+                var x = pool[i];
+                pool[i] = pool[j];
+                pool[j] = x;
+            }
+            pool.length = k; // truncate
+            return pool;
+        } else {
+            var selected = new Set();
+            while (selected.add(Math.random() * n | 0).size < k) {}
+            return Array.prototype.map.call(selected, i => pool[i]);
+        }
+    }
+    function arr_intersect(a, b) {
+      let setB = new Set(b);
+      return [...new Set(a)].filter(x => setB.has(x));
+    }
+    const arr_omit = (obj, prop) => {
+      let {[prop]: omit, ...res} = obj
+      return res
+    }
     const urlParams = new URLSearchParams(window.location.search);
     const name = urlParams.get('n');
     const type = urlParams.get('t');
@@ -233,8 +267,11 @@
     const premiumprice = document.getElementById("premium_price");
     const customtypeselect = document.getElementById("customtypeselect");
     var hasPremium = localStorage.getItem("premium") === "kostya";
-    if (localStorage.getItem("orgs") === null) localStorage.setItem("orgs", "[]");
+    if (localStorage.getItem("orgs") === null) localStorage.setItem("orgs", "{}");
     var trustedOrgs = JSON.parse(localStorage.getItem("orgs"));
+    function saveOrgs() {
+      localStorage.setItem("orgs", JSON.stringify(trustedOrgs)); // Save orgs
+    }
     if (localStorage.getItem("privatekey") === null || localStorage.getItem("publickey") === null) {
       crypto.subtle.generateKey(
         {
@@ -268,18 +305,54 @@
 
     create_btn.addEventListener("click", e => {
       if (!creator_form.reportValidity()) return;
+      orgname = creator_form.elements["orgnameinp"].value;
       customparams = "";
+      textenc = new TextEncoder();
+      all_data = new Uint8Array();
       if (creator_form.elements["type_select"].value == "customtype") {
         if (!hasPremium) {
           alert("Сертифигав доступен только с Костя Премиум");
           return;
         }
         customparams += `c=${encodeURIComponent(creator_form.elements["customtypetype"].value)}`;
+        textenc.encodeInto(creator_form.elements["customtypetype"].value, all_data);
       }
-      url = `https://howsmsmsuser.github.io/p.github.io/?n=${encodeURIComponent(creator_form.elements["name"].value)}&t=${creator_form.elements["type_select"].selectedIndex}&${customparams}`;
-      qrurl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=300x300`;
-      qrout.style.display = "block";
-      qr.src = qrurl;
+      all_data = textenc.encodeInto(creator_form.elements["type_select"].selectedIndex+creator_form.elements["name"].value+"0"+orgname, all_data);
+      crypto.subtle.sign(
+        {
+          name: "RSA-PSS",
+          saltLength: 16,
+        },
+        key.privateKey,
+        all_data
+      ).then((signature) => {
+        crypto.subtle.exportKey("jwk", key.publicKey).then((jwkobject) => {
+          if (!(orgname in trustedOrgs)) trustedOrgs[orgname] = [];
+          entries_with_key = trustedOrgs[orgname].filter((entry) => {entry["key"] == jwkobject});
+          if (entries_with_key) {
+            // Increment key uses when signing (probably bad)
+            //for (entry of entries_with_key) {entry["uses"]++}
+            thisorgentry = entries_with_key[0];
+          } else {
+            thisorgentry = { // Default org data
+              "key": jwkobject,
+              "uses": 0
+            }
+            trustedOrgs[orgname].unshift(thisorgentry);
+          };
+          console.debug("signed cert, all trusted orgs now are:", trustedOrgs);
+          saveOrgs();
+          if (trustedOrgs.length-1 >= 1) { // If we can take a sample
+            randomorgs = arr_sample(arr_omit(trustedOrgs, orgname), Math.min(trustedOrgs.length-1, 2), false);
+            console.info("Included random orgs:", randomorgs);
+          }
+          
+          url = `https://howsmsmsuser.github.io/p.github.io/?n=${encodeURIComponent(creator_form.elements["name"].value)}&o=${encodeURIComponent(orgname)}&t=${creator_form.elements["type_select"].selectedIndex}&${customparams}`;
+          qrurl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=300x300`;
+          qrout.style.display = "block";
+          qr.src = qrurl;
+        });
+      });
     })
     creator_form.elements["type_select"].addEventListener("change", e => {
       if (e.target.value == "customtype") {
