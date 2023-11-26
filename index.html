@@ -293,7 +293,7 @@
       });
     } else {
       key = {}
-      crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("publickey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["verify"]).then((pubkey) => {key.publicKey = pubkey});
+      crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("publickey")), { name: "RSA-PSS", hash: "SHA-256", }, true, ["verify"]).then((pubkey) => {key.publicKey = pubkey});
       crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("privatekey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["sign"]).then((privkey) => {key.privateKey = privkey});
     }
     if (hasPremium) ad.style.display = "none";
