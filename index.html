@@ -246,6 +246,9 @@
       let setB = new Set(b);
       return [...new Set(a)].filter(x => setB.has(x));
     }
+    function arr_random_favor_1st(array) {
+      return array[Math.round((Math.random()*Math.sqrt(array.length-1))**2)]
+    }
     const arr_omit = (obj, prop) => {
       let {[prop]: omit, ...res} = obj
       return res
@@ -347,7 +350,7 @@
           saveOrgs();
           trustedOrgslen = Object.keys(trustedOrgs).length
           if (trustedOrgslen-1 >= 1) { // If we can take a sample
-            randomorgs = arr_sample(Object.values(arr_omit(trustedOrgs, orgname)), Math.min(trustedOrgslen-1, 2), false);
+            randomorgs = arr_sample(Object.values(arr_omit(trustedOrgs, orgname)), Math.min(trustedOrgslen-1, 2), false).map((org) => arr_random_favor_1st(org));
             console.info("Included random orgs:", randomorgs);
           }
           
