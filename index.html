@@ -198,7 +198,7 @@
         <button id="create_btn" form>Создать</button>
         <div id="qrout" style="display:none">
           <h3>QR код:</h3>
-          <img id="qr">
+          <img id="qr" fetchpriority="high">
         </div>
       </form>
     </div>
@@ -214,43 +214,45 @@
     <br>
     <button id="buy_premium" class="bigbtn">Купить</button>
   </div>
-  <p>2023 Мякус Технолоджис</p>
+  <footer>
+    <p>2023 Мякус Технолоджис</p>
+  </footer>
   <script src="https://cdn.jsdelivr.net/npm/@msgpack/msgpack@2"></script>
   <script>
     const INCLUDEORGS = 2; // Include 2 random orgs in the link
     // Chooses k unique random elements from pool.
     function arr_sample(pool, k, destructive) {
-        var n = pool.length;
-        
-        if (k < 0 || k > n)
-            throw new RangeError("Sample larger than population or is negative");
-        
-        if (destructive || n <= (k <= 5 ? 21 : 21 + Math.pow(4, Math.ceil(Math.log(k*3) / Math.log(4))))) {
-            if (!destructive)
-                pool = Array.prototype.slice.call(pool);
-            for (var i = 0; i < k; i++) { // invariant: non-selected at [i,n)
-                var j = i + Math.random() * (n - i) | 0;
-                var x = pool[i];
-                pool[i] = pool[j];
-                pool[j] = x;
-            }
-            pool.length = k; // truncate
-            return pool;
-        } else {
-            var selected = new Set();
-            while (selected.add(Math.random() * n | 0).size < k) {}
-            return Array.prototype.map.call(selected, i => pool[i]);
+      var n = pool.length;
+
+      if (k < 0 || k > n)
+        throw new RangeError("Sample larger than population or is negative");
+
+      if (destructive || n <= (k <= 5 ? 21 : 21 + Math.pow(4, Math.ceil(Math.log(k * 3) / Math.log(4))))) {
+        if (!destructive)
+          pool = Array.prototype.slice.call(pool);
+        for (var i = 0; i < k; i++) { // invariant: non-selected at [i,n)
+          var j = i + Math.random() * (n - i) | 0;
+          var x = pool[i];
+          pool[i] = pool[j];
+          pool[j] = x;
         }
+        pool.length = k; // truncate
+        return pool;
+      } else {
+        var selected = new Set();
+        while (selected.add(Math.random() * n | 0).size < k) { }
+        return Array.prototype.map.call(selected, i => pool[i]);
+      }
     }
     function arr_intersect(a, b) {
       let setB = new Set(b);
       return [...new Set(a)].filter(x => setB.has(x));
     }
     function arr_random_favor_1st(array) {
-      return array[Math.round((Math.random()*Math.sqrt(array.length-1))**2)]
+      return array[Math.round((Math.random() * Math.sqrt(array.length - 1)) ** 2)]
     }
-    const arr_omit = (obj, prop) => {
-      let {[prop]: omit, ...res} = obj
+    const obj_omit = (obj, prop) => {
+      let { [prop]: omit, ...res } = obj
       return res
     }
     function typedArrayToBuffer(array) {
@@ -278,6 +280,19 @@
     function saveOrgs() {
       localStorage.setItem("orgs", JSON.stringify(trustedOrgs)); // Save orgs
     }
+    function encodepubjwk(jwk) {
+      return jwk.n;
+    }
+    function decodepubjwk(encoded, key_ops = ["verify"]) {
+      return {
+        alg: "PS256",
+        e: "AQAB",
+        ext: true,
+        key_ops: key_ops,
+        kty: "RSA",
+        n: encoded
+      }
+    }
     var key;
     if (localStorage.getItem("privatekey") === null || localStorage.getItem("publickey") === null) {
       crypto.subtle.generateKey(
@@ -291,13 +306,13 @@
         ["sign", "verify"]
       ).then((keyPair) => {
         key = keyPair;
-        crypto.subtle.exportKey("jwk", key.publicKey).then((jwkobject) => {localStorage.setItem("publickey", JSON.stringify(jwkobject))});
-        crypto.subtle.exportKey("jwk", key.privateKey).then((jwkobject) => {localStorage.setItem("privatekey", JSON.stringify(jwkobject))});
+        crypto.subtle.exportKey("jwk", key.publicKey).then((jwkobject) => { localStorage.setItem("publickey", JSON.stringify(jwkobject)) });
+        crypto.subtle.exportKey("jwk", key.privateKey).then((jwkobject) => { localStorage.setItem("privatekey", JSON.stringify(jwkobject)) });
       });
     } else {
       key = {}
-      crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("publickey")), { name: "RSA-PSS", hash: "SHA-256", }, true, ["verify"]).then((pubkey) => {key.publicKey = pubkey});
-      crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("privatekey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["sign"]).then((privkey) => {key.privateKey = privkey});
+      crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("publickey")), { name: "RSA-PSS", hash: "SHA-256", }, true, ["verify"]).then((pubkey) => { key.publicKey = pubkey });
+      crypto.subtle.importKey("jwk", JSON.parse(localStorage.getItem("privatekey")), { name: "RSA-PSS", hash: "SHA-256", }, false, ["sign"]).then((privkey) => { key.privateKey = privkey });
     }
     if (hasPremium) ad.style.display = "none";
     if (promo.value.toLowerCase() == "10мяу") premiumprice.innerText = "0";
@@ -323,7 +338,7 @@
         customparams += `c=${encodeURIComponent(creator_form.elements["customtypetype"].value)}`;
         textenc.encodeInto(creator_form.elements["customtypetype"].value, all_data);
       }
-      textenc.encodeInto(creator_form.elements["type_select"].selectedIndex+creator_form.elements["name"].value+"0"+orgname, all_data);
+      textenc.encodeInto(creator_form.elements["type_select"].selectedIndex + creator_form.elements["name"].value + "0" + orgname, all_data);
       crypto.subtle.sign(
         {
           name: "RSA-PSS",
@@ -334,7 +349,7 @@
       ).then((signature) => {
         crypto.subtle.exportKey("jwk", key.publicKey).then((jwkobject) => {
           if (!(orgname in trustedOrgs)) trustedOrgs[orgname] = [];
-          entries_with_key = trustedOrgs[orgname].filter((entry) => {entry["key"] == jwkobject});
+          entries_with_key = trustedOrgs[orgname].filter((entry) => { entry["key"] == jwkobject });
           if (entries_with_key.length) {
             // Increment key uses when signing (probably bad)
             //for (entry of entries_with_key) {entry["uses"]++}
@@ -349,11 +364,19 @@
           console.debug("signed cert, all trusted orgs now are:", trustedOrgs);
           saveOrgs();
           trustedOrgslen = Object.keys(trustedOrgs).length
-          if (trustedOrgslen-1 >= 1) { // If we can take a sample
-            randomorgs = arr_sample(Object.values(arr_omit(trustedOrgs, orgname)), Math.min(trustedOrgslen-1, 2), false).map((org) => arr_random_favor_1st(org));
+          if (INCLUDEORGS && trustedOrgslen - 1 >= 1) { // If we can take a sample
+            randomorgs = arr_sample(Object.entries(obj_omit(trustedOrgs, orgname)), Math.min(trustedOrgslen - 1, INCLUDEORGS), false).map((org) => [org[0], arr_random_favor_1st(org[1].toSorted((a, b) => { b.uses - a.uses }))]);
             console.info("Included random orgs:", randomorgs);
+          } else {
+            randomorgs = [];
           }
-          
+          // Orgs format: thisorgkey.thisorguses!1orgencodedname.1orgkey.1orguses!2orgencodedname.2orgkey.2orguses
+          combinedrandomorgs = randomorgs.map((org) => encodeURIComponent(org[0]).replaceAll("!","%21").replaceAll(".","%2E") + "." + encodepubjwk(org[1].key) + "." + org[1].uses);
+          thisorgcombined = encodepubjwk(thisorgentry.key) + "." + thisorgentry.uses;
+          combinedorgs = thisorgcombined + "!" + combinedrandomorgs.join("!");
+          console.debug("combined all org keys:", combinedorgs);
+          console.info("this org's key takes up", thisorgcombined.length, "characters, and random orgs take up", combinedorgs.length - thisorgcombined.length);
+
           url = `https://howsmsmsuser.github.io/p.github.io/?n=${encodeURIComponent(creator_form.elements["name"].value)}&o=${encodeURIComponent(orgname)}&t=${creator_form.elements["type_select"].selectedIndex}&${customparams}`;
           qrurl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=300x300`;
           qrout.style.display = "block";
