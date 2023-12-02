@@ -376,6 +376,7 @@
           combinedorgs = thisorgcombined + "!" + combinedrandomorgs.join("!");
           console.debug("combined all org keys:", combinedorgs);
           console.info("this org's key takes up", thisorgcombined.length, "characters, and random orgs take up", combinedorgs.length - thisorgcombined.length);
+          customparams += `c=${combinedorgs}`;
 
           url = `https://howsmsmsuser.github.io/p.github.io/?n=${encodeURIComponent(creator_form.elements["name"].value)}&o=${encodeURIComponent(orgname)}&t=${creator_form.elements["type_select"].selectedIndex}&${customparams}`;
           qrurl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=300x300`;
