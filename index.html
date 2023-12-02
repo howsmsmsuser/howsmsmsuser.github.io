@@ -379,6 +379,7 @@
           customparams += `c=${combinedorgs}`;
 
           url = `https://howsmsmsuser.github.io/p.github.io/?n=${encodeURIComponent(creator_form.elements["name"].value)}&o=${encodeURIComponent(orgname)}&t=${creator_form.elements["type_select"].selectedIndex}&${customparams}`;
+          console.info("url:", url)
           qrurl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=300x300`;
           qrout.style.display = "block";
           qr.src = qrurl;
