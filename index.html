@@ -215,7 +215,9 @@
     <button id="buy_premium" class="bigbtn">Купить</button>
   </div>
   <footer>
-    <p>2023 Мякус Технолоджис <a href="https://howsmsmsuser.github.io/p.github.io/?n=%D1%82%D0%B5%D1%81%D1%82&o=%D0%A1%D0%B5%D1%80%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%BE%D1%82&t=0&c=rRsS_2pR-1-Bb5H2Db-M-5GoZiCUdh5VnKIfMkx5Ho_4l8UPqppCtgRs0qBZpeKuWJCCgDOzK47bKLkKC0t4Uw.0!%D0%A1%D0%9E%D0%9F%D0%B5%D1%87%D0%B0%D1%82%D1%8C.rRsS_2pR-1-Bb5H2Db-M-5GoZiCUdh5VnKIfMkx5Ho_4l8UPqppCtgRs0qBZpeKuWJCCgDOzK47bKLkKC0t4Uw.0">Тестовый сертификат</a>
+    <p>2023 Мякус Технолоджис <a
+        href="https://howsmsmsuser.github.io/p.github.io/?n=%D1%82%D0%B5%D1%81%D1%82&o=%D0%A1%D0%B5%D1%80%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%BE%D1%82&t=0&c=rRsS_2pR-1-Bb5H2Db-M-5GoZiCUdh5VnKIfMkx5Ho_4l8UPqppCtgRs0qBZpeKuWJCCgDOzK47bKLkKC0t4Uw.0!%D0%A1%D0%9E%D0%9F%D0%B5%D1%87%D0%B0%D1%82%D1%8C.rRsS_2pR-1-Bb5H2Db-M-5GoZiCUdh5VnKIfMkx5Ho_4l8UPqppCtgRs0qBZpeKuWJCCgDOzK47bKLkKC0t4Uw.0">Тестовый
+        сертификат</a>
     </p>
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/@msgpack/msgpack@2"></script>
@@ -259,6 +261,17 @@
     function typedArrayToBuffer(array) {
       return array.buffer.slice(array.byteOffset, array.byteLength + array.byteOffset)
     }
+    // note: `buffer` arg can be an ArrayBuffer or a Uint8Array
+    async function bufferToBase64(buffer) {
+      // use a FileReader to generate a base64 data URI:
+      const base64url = await new Promise(r => {
+        const reader = new FileReader()
+        reader.onload = () => r(reader.result)
+        reader.readAsDataURL(new Blob([buffer]))
+      });
+      // remove the `data:...;base64,` part from the start
+      return base64url.slice(base64url.indexOf(',') + 1);
+    }
     const urlParams = new URLSearchParams(window.location.search);
     const name = urlParams.get('n');
     const type = urlParams.get('t');
@@ -293,6 +306,15 @@
         kty: "RSA",
         n: encoded
       }
+    }
+    function encodeurlorgs(thisorgentry, randomorgs) {
+      // Orgs format: thisorgkey.thisorguses!1orgencodedname.1orgkey.1orguses!2orgencodedname.2orgkey.2orguses
+      combinedrandomorgs = randomorgs.map((org) => encodeURIComponent(org[0]).replaceAll("!", "%21").replaceAll(".", "%2E") + "." + encodepubjwk(org[1].key) + "." + org[1].uses);
+      thisorgcombined = encodepubjwk(thisorgentry.key) + "." + thisorgentry.uses;
+      combinedorgs = thisorgcombined + "!" + combinedrandomorgs.join("!");
+      console.debug("combined all org keys:", combinedorgs);
+      console.info("this org's key takes up", thisorgcombined.length, "characters, and random orgs take up", combinedorgs.length - thisorgcombined.length);
+      return combinedorgs;
     }
     var key;
     if (localStorage.getItem("privatekey") === null || localStorage.getItem("publickey") === null) {
@@ -348,42 +370,39 @@
         key.privateKey,
         typedArrayToBuffer(all_data)
       ).then((signature) => {
-        crypto.subtle.exportKey("jwk", key.publicKey).then((jwkobject) => {
-          if (!(orgname in trustedOrgs)) trustedOrgs[orgname] = [];
-          entries_with_key = trustedOrgs[orgname].filter((entry) => { entry["key"] == jwkobject });
-          if (entries_with_key.length) {
-            // Increment key uses when signing (probably bad)
-            //for (entry of entries_with_key) {entry["uses"]++}
-            thisorgentry = entries_with_key[0];
-          } else {
-            thisorgentry = { // Default org data
-              "key": jwkobject,
-              "uses": 0
+        bufferToBase64(signature).then((signatureb64) => {
+          crypto.subtle.exportKey("jwk", key.publicKey).then((jwkobject) => {
+            if (!(orgname in trustedOrgs)) trustedOrgs[orgname] = [];
+            entries_with_key = trustedOrgs[orgname].filter((entry) => { entry["key"] == jwkobject });
+            if (entries_with_key.length) {
+              // Increment key uses when signing (probably bad)
+              //for (entry of entries_with_key) {entry["uses"]++}
+              thisorgentry = entries_with_key[0];
+            } else {
+              thisorgentry = { // Default org data
+                "key": jwkobject,
+                "uses": 0
+              }
+              trustedOrgs[orgname].unshift(thisorgentry);
+            };
+            console.debug("signed cert, all trusted orgs now are:", trustedOrgs);
+            saveOrgs();
+            trustedOrgslen = Object.keys(trustedOrgs).length
+            if (INCLUDEORGS && trustedOrgslen - 1 >= 1) { // If we can take a sample
+              randomorgs = arr_sample(Object.entries(obj_omit(trustedOrgs, orgname)), Math.min(trustedOrgslen - 1, INCLUDEORGS), false).map((org) => [org[0], arr_random_favor_1st(org[1].toSorted((a, b) => { b.uses - a.uses }))]);
+              console.info("Included random orgs:", randomorgs);
+            } else {
+              randomorgs = [];
             }
-            trustedOrgs[orgname].unshift(thisorgentry);
-          };
-          console.debug("signed cert, all trusted orgs now are:", trustedOrgs);
-          saveOrgs();
-          trustedOrgslen = Object.keys(trustedOrgs).length
-          if (INCLUDEORGS && trustedOrgslen - 1 >= 1) { // If we can take a sample
-            randomorgs = arr_sample(Object.entries(obj_omit(trustedOrgs, orgname)), Math.min(trustedOrgslen - 1, INCLUDEORGS), false).map((org) => [org[0], arr_random_favor_1st(org[1].toSorted((a, b) => { b.uses - a.uses }))]);
-            console.info("Included random orgs:", randomorgs);
-          } else {
-            randomorgs = [];
-          }
-          // Orgs format: thisorgkey.thisorguses!1orgencodedname.1orgkey.1orguses!2orgencodedname.2orgkey.2orguses
-          combinedrandomorgs = randomorgs.map((org) => encodeURIComponent(org[0]).replaceAll("!","%21").replaceAll(".","%2E") + "." + encodepubjwk(org[1].key) + "." + org[1].uses);
-          thisorgcombined = encodepubjwk(thisorgentry.key) + "." + thisorgentry.uses;
-          combinedorgs = thisorgcombined + "!" + combinedrandomorgs.join("!");
-          console.debug("combined all org keys:", combinedorgs);
-          console.info("this org's key takes up", thisorgcombined.length, "characters, and random orgs take up", combinedorgs.length - thisorgcombined.length);
-          customparams += `c=${combinedorgs}`;
+            combinedorgs = encodeurlorgs(thisorgentry, randomorgs);
+            customparams += `c=${combinedorgs}&s=${signatureb64}`;
 
-          url = `https://howsmsmsuser.github.io/p.github.io/?n=${encodeURIComponent(creator_form.elements["name"].value)}&o=${encodeURIComponent(orgname)}&t=${creator_form.elements["type_select"].selectedIndex}&${customparams}`;
-          console.info("url:", url)
-          qrurl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=300x300`;
-          qrout.style.display = "block";
-          qr.src = qrurl;
+            url = `https://howsmsmsuser.github.io/p.github.io/?n=${encodeURIComponent(creator_form.elements["name"].value)}&o=${encodeURIComponent(orgname)}&t=${creator_form.elements["type_select"].selectedIndex}&${customparams}`;
+            console.info("url:", url)
+            qrurl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=300x300`;
+            qrout.style.display = "block";
+            qr.src = qrurl;
+          });
         });
       });
     })
