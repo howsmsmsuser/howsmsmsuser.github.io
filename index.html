@@ -216,7 +216,7 @@
   </div>
   <footer>
     <p>2023 Мякус Технолоджис <a
-        href="https://howsmsmsuser.github.io/?n=%D1%82%D0%B5%D1%81%D1%82&o=%D0%A1%D0%B5%D1%80%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%BE%D1%82&t=0&c=rRsS_2pR-1-Bb5H2Db-M-5GoZiCUdh5VnKIfMkx5Ho_4l8UPqppCtgRs0qBZpeKuWJCCgDOzK47bKLkKC0t4Uw.0!%D0%A1%D0%9E%D0%9F%D0%B5%D1%87%D0%B0%D1%82%D1%8C.rRsS_2pR-1-Bb5H2Db-M-5GoZiCUdh5VnKIfMkx5Ho_4l8UPqppCtgRs0qBZpeKuWJCCgDOzK47bKLkKC0t4Uw.0&s=S0mLEMWfStfa2FtNW75mQqkNNsiHp2S6ppum8+7EbssLTzjKSL7HgwJIvjPzym2VCKlNsMrhKvtgDL2F+su9bQ==">Тестовый
+        href="https://howsmsmsuser.github.io/?n=%D1%82%D0%B5%D1%81%D1%82&o=%D0%A1%D0%B5%D1%80%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%BE%D1%82&t=0&k=rRsS_2pR-1-Bb5H2Db-M-5GoZiCUdh5VnKIfMkx5Ho_4l8UPqppCtgRs0qBZpeKuWJCCgDOzK47bKLkKC0t4Uw.0!%D0%A1%D0%9E%D0%9F%D0%B5%D1%87%D0%B0%D1%82%D1%8C.rRsS_2pR-1-Bb5H2Db-M-5GoZiCUdh5VnKIfMkx5Ho_4l8UPqppCtgRs0qBZpeKuWJCCgDOzK47bKLkKC0t4Uw.0&s=S0mLEMWfStfa2FtNW75mQqkNNsiHp2S6ppum8+7EbssLTzjKSL7HgwJIvjPzym2VCKlNsMrhKvtgDL2F+su9bQ==">Тестовый
         сертификат</a>
     </p>
   </footer>
@@ -395,7 +395,7 @@
               randomorgs = [];
             }
             combinedorgs = encodeurlorgs(thisorgentry, randomorgs);
-            customparams += `c=${combinedorgs}&s=${signatureb64}`;
+            customparams += `k=${combinedorgs}&s=${signatureb64}`;
 
             url = `https://howsmsmsuser.github.io/?n=${encodeURIComponent(creator_form.elements["name"].value)}&o=${encodeURIComponent(orgname)}&t=${creator_form.elements["type_select"].selectedIndex}&${customparams}`;
             console.info("url:", url)
