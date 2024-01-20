@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Rubik&display=swap" rel="stylesheet">
@@ -12,6 +13,8 @@
       --primary: #49c572;
       --secondary: #e0d7dd;
       --accent: #d5632a;
+      --card-size: 80%;
+      --rounding: 10px;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -29,11 +32,7 @@
       font-weight: 400;
     }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5 {
+    h1 {
       font-family: 'Comfortaa';
       font-weight: 700;
     }
@@ -44,8 +43,10 @@
 
     /* 16px */
     @media (max-aspect-ratio: 1/1) {
-
       /*Mobile screen test*/
+      :root {
+        --card-size: 90%;
+      }
       html,
       * {
         font-size: max(100%, 2.5vw);
@@ -92,10 +93,10 @@
     }
 
     details {
-      border-radius: 4px;
+      border-radius: var(--rounding);
       background-color: var(--primary);
       color: var(--background);
-      width: 90%;
+      width: var(--card-size);
     }
 
     summary {
@@ -136,7 +137,7 @@
     button,
     select {
       border: 0;
-      border-radius: 4px;
+      border-radius: var(--rounding);
       margin: 3px;
     }
 
@@ -158,10 +159,10 @@
     }
 
     #pd {
-      width: 90%;
+      width: var(--card-size);
       background-color: var(--accent);
       margin-top: 8vh;
-      border-radius: 4px;
+      border-radius: var(--rounding);
       color: var(--background);
     }
   </style>
