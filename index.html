@@ -144,6 +144,17 @@
       border: 0;
       border-radius: var(--rounding);
       margin: 3px;
+      display: block;
+    }
+
+    .onewidth {
+      width: calc(var(--card-size) - 10%);
+    }
+
+    form {
+      display: flex;
+      flex-flow: column;
+      align-items: center;
     }
 
     .bigbtn {
@@ -185,23 +196,23 @@
       <h3>Создать свой сертификат</h3>
       <form id="creator_form">
         <label for="name">Имя объекта: </label>
-        <input type="text" id="name" name="name" required minlength="1" maxlength="20" />
+        <input class="onewidth" type="text" id="name" name="name" required minlength="1" maxlength="20" />
         <br>
         <label for="type_select">Тип:</label>
-        <select id="type_select" name="type_select" reqiured>
+        <select class="onewidth" id="type_select" name="type_select" reqiured>
           <option id="generaltype" value="generaltype" selected required>Сертификот: Обычный</option>
           <option id="doctype" value="doctype" required>Сертификот: Деловой печатный документ</option>
           <option id="customtype" value="customtype" required>Сертифигав: Свой тип</option>
         </select>
         <div id="customtypeselect" style="display:none">
           <label for="customtypetype">Тип объекта: </label>
-          <input type="text" id="customtypetype" name="customtypetype" required minlength="1" maxlength="20" />
+          <input class="onewidth" type="text" id="customtypetype" name="customtypetype" required minlength="1" maxlength="20" />
         </div>
         <br>
         <label for="orgnameinp">Название организации: </label>
-        <input type="text" id="orgnameinp" name="orgnameinp" required minlength="3" maxlength="20" />
+        <input class="onewidth" type="text" id="orgnameinp" name="orgnameinp" required minlength="3" maxlength="20" />
         <br>
-        <button id="create_btn" form>Создать</button>
+        <button class="onewidth" id="create_btn" form>Создать</button>
         <div id="qrout" style="display:none">
           <h3>QR код:</h3>
           <img id="qr" fetchpriority="high">
