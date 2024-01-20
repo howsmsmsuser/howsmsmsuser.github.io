@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <meta name="viewport" content="initial-scale=1, maximum-scale=3" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Rubik&display=swap" rel="stylesheet">
@@ -43,10 +43,12 @@
 
     /* 16px */
     @media (max-aspect-ratio: 1/1) {
+
       /*Mobile screen test*/
       :root {
         --card-size: 90%;
       }
+
       html,
       * {
         font-size: max(100%, 2.5vw);
@@ -84,6 +86,8 @@
     }
 
     body {
+      width: 100vw;
+      margin: 0;
       display: flex;
       flex-flow: column;
       align-items: center;
